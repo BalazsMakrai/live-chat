@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+import { ref, watchEffect } from 'vue';
 import { projectFiresore } from '../firebase/config';
 
 const getCollection = (collection) => {
@@ -6,7 +6,7 @@ const getCollection = (collection) => {
     const error = ref(null);
 
     let collectionRef = projectFiresore.collection(collection).orderBy('createdAt');
-    collectionRef.onSnapshot((snap) => {
+    const unsub = collectionRef.onSnapshot((snap) => {
         let results = [];
         snap.docs.forEach(doc => {
             doc.data().createdAt && results.push({
@@ -20,6 +20,10 @@ const getCollection = (collection) => {
         console.log(err.message);
         documents.value = null;
         error.value = 'Could not fetch data';
+    });
+
+    watchEffect((onInvalidate) => { // unsub from previous collection when watcher is stopped (component unmounted)
+        onInvalidate(() => unsub())
     });
 
     return { error, documents }
