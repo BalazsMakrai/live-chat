@@ -6,7 +6,7 @@ const getCollection = (collection) => {
     const error = ref(null);
 
     let collectionRef = projectFiresore.collection(collection).orderBy('createdAt');
-    collectionRef.onSnapshot(() => {
+    collectionRef.onSnapshot((snap) => {
         let results = [];
         snap.docs.forEach(doc => {
             doc.data().createdAt && results.push({
