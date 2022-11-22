@@ -3,9 +3,9 @@
         <div v-if="error">
             {{ error }}
         </div>
-        <div v-if="documents" class="messages">
+        <div v-if="documents" class="messages" ref="messages">
             <div v-for="doc in formattedDocuments" :key="doc.id" class="single">
-                <span class="created-at">{{ doc.createdAt}}</span>
+                <span class="created-at">{{ doc.createdAt }}</span>
                 <span class="name">{{ doc.name }}</span>
                 <span class="message">{{ doc.message }}</span>
             </div>
@@ -16,7 +16,8 @@
 <script>
 import getCollection from '@/composables/getCollection';
 import { formatDistanceToNow } from 'date-fns';
-import { computed } from 'vue';
+import { ref, computed, onUpdated } from 'vue';
+
 export default {
     setup() {
         const { error, documents } = getCollection('messages');
@@ -28,10 +29,19 @@ export default {
                 });
             }
         });
+
+        //auto-scroll to bottom of messages
+        const messages = ref(null);
+        onUpdated(() => {
+            messages.value.scrollTop = messages.value.scrollHeight;
+        });
+
+
         return {
             error,
             documents,
-            formattedDocuments
+            formattedDocuments,
+            messages
         };
     }
 };
