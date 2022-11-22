@@ -12,13 +12,13 @@
 import useLogout from '@/composables/useLogout';
 import getUser from '@/composables/getUser';
 export default {
-    setup() {
+    setup(props, context) {
         const { logout, error } = useLogout();
         const { user } = getUser();
         const handleClick = async () => {
             await logout();
             if (!error.value) {
-                console.log('user logged out');
+                context.emit('redirect');
             }
         };
         return { handleClick, user };

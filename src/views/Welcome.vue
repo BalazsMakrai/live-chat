@@ -27,7 +27,6 @@ export default {
     setup() {
         const showLogin = ref(true);
         const router = useRouter();
-
         const enterChat = () => {
             router.push({ name: 'Chatroom' });
         };
